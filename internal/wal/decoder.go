@@ -104,7 +104,7 @@ func (dec *decoder) decode(record *walpb.Record) error {
 		return err
 	}
 
-	if record.Type != walpb.Record_CheckSum {
+	if record.Type != walpb.EntryType_CheckSum {
 		_, err = dec.crc.Write(record.Data)
 		if err != nil {
 			return err

@@ -7,17 +7,17 @@ import "gogoproto/gogo.proto";
 option (gogoproto.marshaler_all) = true;
 option (gogoproto.sizer_all) = true;
 option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.goproto_getters_all) = false;
+option (gogoproto.goproto_getters_all) = true;
+
+enum EntryType {
+  Metadata = 0;
+  Entry = 1;
+  CheckSum = 2;
+}
 
 message Record {
-  enum EntryType {
-    Metadata = 0;
-    Entry = 1;
-    CheckSum = 2;
-  }
-
   EntryType Type = 1;
-  uint32 crc = 2;
-  bytes data = 3;
+  uint32 Crc = 2;
+  bytes Data = 3;
   uint64 CreatedTimestamp = 4;
 }

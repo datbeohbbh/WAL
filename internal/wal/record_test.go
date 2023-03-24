@@ -71,7 +71,7 @@ func TestReadRecord(t *testing.T) {
 
 func TestWriteRecord(t *testing.T) {
 	b := &walpb.Record{}
-	typ := walpb.Record_EntryType(0xABCD)
+	typ := walpb.EntryType(0xABCD)
 	d := []byte("Hello world!")
 	buf := new(bytes.Buffer)
 	e := newEncoder(buf, 0, 0)
