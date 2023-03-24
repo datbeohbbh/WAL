@@ -93,6 +93,8 @@ func (pw *PageWriter) flush() (n int, err error) {
 		return 0, nil
 	}
 	n, err = pw.w.Write(pw.buf[:pw.bufferedBytes])
+	// Reset offset to offset of current page.
+	// Reset buffer.
 	pw.pageOffset = (pw.pageOffset + pw.bufferedBytes) % pw.pageSize
 	pw.bufferedBytes = 0
 	return n, err
