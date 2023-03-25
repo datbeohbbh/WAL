@@ -195,7 +195,7 @@ func (dec *decoder) UpdateCRC(prevCrc uint32) {
 
 func decodeFrameSize(l int64) (lenField int64, padding int64) {
 	lenField = int64(uint64(l) & ^(uint64(0xff) << 56))
-	if lenField < 0 {
+	if l < 0 {
 		padding = int64((uint64(l) >> 56) & 0x7)
 	}
 	return lenField, padding
