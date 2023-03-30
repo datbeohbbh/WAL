@@ -39,8 +39,6 @@ var (
 	ErrMetadataConflict = errors.New("wal: conflicting metadata found")
 	ErrFileNotFound     = errors.New("wal: file not found")
 	ErrCRCMismatch      = walpb.ErrCRCMismatch
-	ErrSnapshotMismatch = errors.New("wal: snapshot mismatch")
-	ErrSnapshotNotFound = errors.New("wal: snapshot not found")
 	ErrSliceOutOfRange  = errors.New("wal: slice bounds out of range")
 	ErrDecoderNotFound  = errors.New("wal: decoder not found")
 	crcTable            = crc32.MakeTable(crc32.Castagnoli)
@@ -331,7 +329,6 @@ func (w *WAL) ReadAll() (metadata []byte, ents []logpb.LogEntry, err error) {
 	}
 	decoder := w.decoder
 
-	var match bool
 	for err = decoder.Decode(rec); err == nil; err = decoder.Decode(rec) {
 		switch rec.Type {
 		case EntryType:
@@ -387,9 +384,6 @@ func (w *WAL) ReadAll() (metadata []byte, ents []logpb.LogEntry, err error) {
 	}
 
 	err = nil
-	if !match {
-		err = ErrSnapshotNotFound
-	}
 
 	// close decoder, disable reading
 	if w.readClose != nil {
@@ -665,6 +659,53 @@ func (w *WAL) sync() error {
 
 func (w *WAL) Sync() error {
 	return w.sync()
+}
+
+// ReleaseLockTo releases the locks, which has smaller index than the given index
+// except the largest one among them.
+// For example, if WAL is holding lock 1,2,3,4,5,6, ReleaseLockTo(4) will release
+// lock 1,2 but keep 3. ReleaseLockTo(5) will release 1,2,3 but keep 4.
+func (w *WAL) ReleaseLockTo(index uint64) error {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	if len(w.locks) == 0 {
+		return nil
+	}
+
+	var smaller int
+	found := false
+	for i, l := range w.locks {
+		_, lockIndex, err := parseWALName(filepath.Base(l.Name()))
+		if err != nil {
+			return err
+		}
+		if lockIndex >= index {
+			smaller = i - 1
+			found = true
+			break
+		}
+	}
+
+	// if no lock index is greater than the release index, we can
+	// release lock up to the last one(excluding).
+	if !found {
+		smaller = len(w.locks) - 1
+	}
+
+	if smaller <= 0 {
+		return nil
+	}
+
+	for i := 0; i < smaller; i++ {
+		if w.locks[i] == nil {
+			continue
+		}
+		w.locks[i].Close()
+	}
+	w.locks = w.locks[smaller:]
+
+	return nil
 }
 
 func (w *WAL) seq() uint64 {
