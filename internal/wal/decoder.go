@@ -9,6 +9,8 @@ import (
 
 	"github.com/datbeohbbh/wal/internal/utils/crc"
 	"github.com/datbeohbbh/wal/internal/utils/fileutil"
+	"github.com/datbeohbbh/wal/internal/utils/pbutil"
+	"github.com/datbeohbbh/wal/internal/wal/logpb"
 	"github.com/datbeohbbh/wal/internal/wal/walpb"
 )
 
@@ -69,6 +71,9 @@ func (dec *decoder) decode(record *walpb.Record) error {
 
 	if err == io.EOF || (err == nil && l == 0) {
 		dec.bufReaders = dec.bufReaders[1:]
+		if len(dec.bufReaders) == 0 {
+			return io.EOF
+		}
 		dec.lastValidOffset = 0
 		return dec.decode(record)
 	}
@@ -104,7 +109,7 @@ func (dec *decoder) decode(record *walpb.Record) error {
 		return err
 	}
 
-	if record.Type != walpb.EntryType_CheckSum {
+	if record.Type != CrcType {
 		_, err = dec.crc.Write(record.Data)
 		if err != nil {
 			return err
@@ -199,6 +204,12 @@ func decodeFrameSize(l int64) (lenField int64, padding int64) {
 		padding = int64((uint64(l) >> 56) & 0x7)
 	}
 	return lenField, padding
+}
+
+func MustUnmarshalEntry(d []byte) logpb.LogEntry {
+	var e logpb.LogEntry
+	pbutil.MustUnmarshal(&e, d)
+	return e
 }
 
 func readInt64(r io.Reader) (n int64, err error) {

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package logpb;
+
+import "gogoproto/gogo.proto";
+
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.goproto_getters_all) = true;
+
+message LogEntry {
+  uint64 Index = 1;
+  uint64 Term = 2;
+  string CommandName = 3;
+  bytes Command = 4;
+}

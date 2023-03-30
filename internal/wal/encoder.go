@@ -7,7 +7,6 @@ package wal
 import (
 	"encoding/binary"
 	"hash"
-	"hash/crc32"
 	"io"
 	"os"
 	"sync"
@@ -20,11 +19,6 @@ import (
 var (
 	walPageSize = (minSectorSize << 3)
 	padSize     = 8
-)
-
-var (
-	poly     = crc32.Castagnoli
-	crcTable = crc32.MakeTable(uint32(poly))
 )
 
 type encoder struct {
