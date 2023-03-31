@@ -24,6 +24,8 @@ func TestE2E(t *testing.T) {
 			log.Println(w.Name())
 		}
 		os.RemoveAll(t.Name())
+
+		customSegmentSizeBytes(64 * 1024 * 1024)
 	}()
 
 	t.Run("wal", func(t *testing.T) {
