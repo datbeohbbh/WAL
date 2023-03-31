@@ -13,7 +13,7 @@ import (
 
 	"github.com/datbeohbbh/wal/internal/utils/crc"
 	"github.com/datbeohbbh/wal/internal/utils/ioutil"
-	"github.com/datbeohbbh/wal/internal/wal/walpb"
+	"github.com/datbeohbbh/wal/pb/walpb"
 )
 
 var (

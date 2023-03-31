@@ -10,13 +10,13 @@ import (
 
 	"github.com/datbeohbbh/wal"
 	w "github.com/datbeohbbh/wal/internal/wal"
-	"github.com/datbeohbbh/wal/internal/wal/logpb"
+	"github.com/datbeohbbh/wal/pb/logpb"
 	"github.com/stretchr/testify/require"
 )
 
 func TestE2E(t *testing.T) {
 	dir := path.Join(t.Name(), "var", "lib", "wal")
-	w.SegmentSizeBytes = 1024 * 1024
+	customSegmentSizeBytes(1024 * 1024)
 
 	defer func() {
 		walFiles, _ := os.ReadDir(dir)
@@ -113,4 +113,8 @@ func prepareEntryData() ([]logpb.LogEntry, error) {
 	}
 
 	return ents, nil
+}
+
+func customSegmentSizeBytes(size int64) {
+	w.SegmentSizeBytes = size
 }

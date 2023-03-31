@@ -13,8 +13,8 @@ import (
 	"go.uber.org/zap/zaptest"
 
 	"github.com/datbeohbbh/wal/internal/utils/fileutil"
-	"github.com/datbeohbbh/wal/internal/wal/logpb"
-	"github.com/datbeohbbh/wal/internal/wal/walpb"
+	"github.com/datbeohbbh/wal/pb/logpb"
+	"github.com/datbeohbbh/wal/pb/walpb"
 )
 
 func TestNew(t *testing.T) {

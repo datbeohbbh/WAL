@@ -2,7 +2,7 @@ package wal
 
 import (
 	internalWAL "github.com/datbeohbbh/wal/internal/wal"
-	"github.com/datbeohbbh/wal/internal/wal/logpb"
+	"github.com/datbeohbbh/wal/pb/logpb"
 )
 
 type WAL interface {

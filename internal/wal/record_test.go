@@ -24,7 +24,7 @@ import (
 	"testing"
 
 	"github.com/datbeohbbh/wal/internal/utils/fileutil"
-	"github.com/datbeohbbh/wal/internal/wal/walpb"
+	"github.com/datbeohbbh/wal/pb/walpb"
 )
 
 var (

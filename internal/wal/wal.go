@@ -14,8 +14,8 @@ import (
 
 	"github.com/datbeohbbh/wal/internal/utils/fileutil"
 	"github.com/datbeohbbh/wal/internal/utils/pbutil"
-	"github.com/datbeohbbh/wal/internal/wal/logpb"
-	"github.com/datbeohbbh/wal/internal/wal/walpb"
+	"github.com/datbeohbbh/wal/pb/logpb"
+	"github.com/datbeohbbh/wal/pb/walpb"
 	"go.uber.org/zap"
 )
 
