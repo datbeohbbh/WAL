@@ -12,6 +12,7 @@ import (
 	w "github.com/datbeohbbh/wal/internal/wal"
 	"github.com/datbeohbbh/wal/pb/logpb"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 )
 
 func TestE2E(t *testing.T) {
@@ -31,7 +32,9 @@ func TestE2E(t *testing.T) {
 	t.Run("wal", func(t *testing.T) {
 		t.Run("create-dir", func(t *testing.T) {
 			metadata := []byte("integration tests Write-Ahead Log")
-			w, err := wal.Create(dir, metadata)
+			lg, _ := zap.NewDevelopment()
+
+			w, err := wal.Create(lg, dir, metadata)
 			require.NoError(t, err)
 			require.DirExists(t, dir)
 
@@ -44,7 +47,8 @@ func TestE2E(t *testing.T) {
 		require.NoError(t, err)
 
 		t.Run("write-entries", func(t *testing.T) {
-			w, err := wal.Open(dir)
+			lg, _ := zap.NewDevelopment()
+			w, err := wal.Open(lg, dir)
 			require.NoError(t, err)
 			require.NotNil(t, w)
 
